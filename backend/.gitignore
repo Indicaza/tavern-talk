@@ -1,0 +1,47 @@
+# Logs & OS cruft
+*.log
+.DS_Store
+Thumbs.db
+
+# Laravel environment (NEVER COMMIT .env)
+.env
+.env.*    # covers .env.backup, .env.production, etc.
+
+# IDE/editor junk
+/.fleet
+/.idea
+/.nova
+/.vscode
+/.zed
+/phpactor.json
+
+# Composer & vendor
+/vendor/
+/composer.lock # optional if you want lockfile-free workflow
+
+# Node assets (Laravel Mix / Vite frontend inside Laravel)
+node_modules/
+public/build/
+public/hot/
+
+# Storage
+/storage/*.key
+/storage/pail
+/storage/debugbar
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/testing/*
+/storage/framework/views/*
+/storage/logs/*
+/storage/app/public
+
+# PHPUnit & test cache
+.phpunit.result.cache
+/.phpunit.cache
+
+# Homestead/Vagrant
+Homestead.json
+Homestead.yaml
+
+# Misc
+auth.json
