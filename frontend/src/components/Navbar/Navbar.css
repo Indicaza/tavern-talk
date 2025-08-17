@@ -1,0 +1,64 @@
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #111827;
+  border-bottom: 1px solid #1f2937;
+  padding: 10px 16px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  background: #22c55e;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.title {
+  margin: 0;
+  font-size: 18px;
+  color: #f8fafc;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn {
+  appearance: none;
+  border: 1px solid transparent;
+  background: #334155;
+  color: #e2e8f0;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: #475569;
+}
+
+.btn.ghost {
+  background: transparent;
+  border-color: #334155;
+}
+
+.btn.ghost:hover {
+  background: #1f2937;
+}
+
+.btn.danger {
+  background: #b91c1c;
+}
+
+.btn.danger:hover {
+  background: #dc2626;
+}

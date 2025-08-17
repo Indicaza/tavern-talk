@@ -1,37 +1,49 @@
-<script setup>
-import { ref, onMounted } from "vue";
+<script setup lang="ts">
+import { ref } from "vue";
+import Navbar from "./components/Navbar/Navbar.vue";
+import Sidebar from "./components/Sidebar/Sidebar.vue";
+import ChatWindow from "./components/ChatWindow/ChatWindow.vue";
 
-const apiUrl = import.meta.env.VITE_API_URL;
+type Chat = { id: number; name: string };
 
-const status = ref(null);
-const error = ref(null);
+const selectedChat = ref<Chat | null>(null);
 
-const ping = async () => {
-  try {
-    const res = await fetch(`${apiUrl}/api/health`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    status.value = await res.json();
-  } catch (e) {
-    error.value = String(e);
-  }
+const handleSelectChat = (chat: Chat) => {
+  selectedChat.value = chat;
 };
 
-onMounted(ping);
+const handleReset = () => {
+  selectedChat.value = null;
+};
+
+const handleLogout = () => {
+  selectedChat.value = null;
+};
 </script>
 
 <template>
-  <main
-    style="
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
-        sans-serif;
-      padding: 2rem;
-      line-height: 1.4;
-    "
-  >
-    <h1>TavernTalk</h1>
-    <p>API: {{ apiUrl }}</p>
-    <pre v-if="status">{{ JSON.stringify(status, null, 2) }}</pre>
-    <pre v-else-if="error">{{ error }}</pre>
-    <p v-else>Checking health…</p>
-  </main>
+  <div class="app-shell">
+    <Sidebar @select-chat="handleSelectChat" :selected-chat="selectedChat" />
+    <div class="main">
+      <Navbar @reset="handleReset" @logout="handleLogout" />
+      <ChatWindow :selected-chat="selectedChat" />
+    </div>
+  </div>
 </template>
+
+<style scoped>
+.app-shell {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  background: #0f172a;
+  color: #e2e8f0;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+</style>
