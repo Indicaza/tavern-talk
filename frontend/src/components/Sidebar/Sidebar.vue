@@ -1,44 +1,58 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import type { Chat } from "@/types/chat";
 
-type Chat = { id: number; name: string };
-
-const props = defineProps<{
+type Props = {
+  collapsed?: boolean;
+  chats: Chat[];
   selectedChat: Chat | null;
-}>();
+};
+const props = defineProps<Props>();
 
 const emit = defineEmits<{
+  (e: "toggle"): void;
   (e: "select-chat", chat: Chat): void;
 }>();
-
-const chats = ref<Chat[]>([
-  { id: 1, name: "General" },
-  { id: 2, name: "Development" },
-  { id: 3, name: "Random" },
-]);
-
-const selectedId = computed(() => props.selectedChat?.id ?? null);
-
-const selectChat = (chat: Chat) => {
-  emit("select-chat", chat);
-};
 </script>
 
 <template>
-  <aside class="sidebar">
-    <div class="section-title">Chats</div>
-    <ul class="chat-list">
-      <li
-        v-for="c in chats"
-        :key="c.id"
-        class="chat-item"
-        :data-active="selectedId === c.id"
-        @click="selectChat(c)"
+  <!-- 1) Reveal button OUTSIDE the aside so transform on sidebar won't hide it -->
+  <button
+    v-if="props.collapsed"
+    class="revealBtn"
+    @click="emit('toggle')"
+    aria-label="Open sidebar"
+    title="Open sidebar"
+  >
+    ›
+  </button>
+
+  <!-- Sidebar itself -->
+  <aside class="sidebar" :class="{ closed: !!props.collapsed }">
+    <div class="topRow">
+      <button
+        class="collapseBtn"
+        @click="emit('toggle')"
+        aria-label="Collapse sidebar"
+        title="Collapse sidebar"
       >
-        <span class="chat-name">{{ c.name }}</span>
+        {{ props.collapsed ? "›" : "‹" }}
+      </button>
+      <span class="title" v-if="!props.collapsed">Chats</span>
+    </div>
+
+    <ul class="chatList">
+      <li
+        v-for="chat in props.chats"
+        :key="chat.id"
+        class="chatItem"
+        :class="{ active: props.selectedChat?.id === chat.id }"
+        @click="emit('select-chat', chat)"
+      >
+        <span class="dot"></span>
+        <span v-if="!props.collapsed">{{ chat.name }}</span>
       </li>
     </ul>
   </aside>
 </template>
 
-<style scoped src="./Sidebar.css"></style>
+<style src="./Sidebar.css"></style>

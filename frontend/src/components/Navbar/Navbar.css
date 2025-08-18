@@ -1,64 +1,70 @@
-.nav {
+.navbar {
+  position: fixed;
+  top: 0;
+  left: var(--sidebar-width); /* shift right by sidebar width */
+  height: 80px;
   display: flex;
+  justify-content: center;
   align-items: center;
+  background: #141414;
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(83, 83, 83, 0.75);
+  box-shadow: 2px 2px 10px 1px rgba(0, 0, 0, 0.65);
+  -webkit-box-shadow: 2px 2px 10px 1px rgba(0, 0, 0, 0.65);
+  -moz-box-shadow: 2px 2px 10px 1px rgba(0, 0, 0, 0.65);
+  width: calc(100% - var(--sidebar-width));
+  transition: left 0.25s ease, width 0.25s ease;
+  /* z-index: 20; */
+}
+
+.navbarContainer {
+  display: flex;
   justify-content: space-between;
-  background: #111827;
-  border-bottom: 1px solid #1f2937;
-  padding: 10px 16px;
+  align-items: center;
+  width: 100%;
+  /* max-width: 1440px; */
+  padding: 0 45px;
+  margin: 0 auto;
 }
 
-.brand {
+.navbarLeft {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 14px;
 }
 
-.dot {
-  width: 10px;
-  height: 10px;
-  background: #22c55e;
-  border-radius: 50%;
-  display: inline-block;
-}
-
-.title {
+.navbarTitle {
+  font-size: 32px;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica,
+    Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  font-weight: 600;
+  color: #fff;
   margin: 0;
-  font-size: 18px;
-  color: #f8fafc;
 }
 
-.actions {
+.navbarRight {
   display: flex;
-  gap: 8px;
+  align-items: center;
+  position: relative;
 }
 
-.btn {
-  appearance: none;
-  border: 1px solid transparent;
-  background: #334155;
-  color: #e2e8f0;
-  padding: 6px 10px;
-  border-radius: 8px;
+.userAvatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
   cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+  box-shadow: 3px 3px 3px rgba(1, 1, 1, 0.95);
+  object-fit: cover;
+}
+.userAvatar:hover {
+  transform: scale(1.1);
 }
 
-.btn:hover {
-  background: #475569;
-}
-
-.btn.ghost {
-  background: transparent;
-  border-color: #334155;
-}
-
-.btn.ghost:hover {
-  background: #1f2937;
-}
-
-.btn.danger {
-  background: #b91c1c;
-}
-
-.btn.danger:hover {
-  background: #dc2626;
+@media (max-width: 900px) {
+  /* On mobile the sidebar overlays, so navbar always full width */
+  .navbar {
+    left: 0;
+    width: 100%;
+  }
 }

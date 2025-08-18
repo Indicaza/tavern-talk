@@ -1,126 +1,97 @@
 <script setup lang="ts">
-import { ref, watch, onMounted, nextTick } from "vue";
+import { ref, onMounted, nextTick, watch } from "vue";
 
-type Chat = { id: number; name: string };
 type Msg = {
-  id: number;
-  role: "user" | "system" | "assistant";
-  text: string;
-  ts: number;
+  id: string | number;
+  role: "user" | "assistant" | "system";
+  content: string;
 };
 
-const props = defineProps<{
-  selectedChat: Chat | null;
-}>();
+const messages = ref<Msg[]>([
+  { id: 1, role: "assistant", content: "Welcome to TavernTalk! 🍻" },
+]);
 
-const threads = ref<Record<number, Msg[]>>({});
-const draft = ref("");
-const listRef = ref<HTMLElement | null>(null);
+const input = ref("");
+const listEl = ref<HTMLElement | null>(null);
+const textareaEl = ref<HTMLTextAreaElement | null>(null);
+const grown = ref(false);
 
-const activeMessages = ref<Msg[]>([]);
+function scrollToBottom() {
+  const el = listEl.value;
+  if (!el) return;
+  el.scrollTop = el.scrollHeight;
+}
 
+onMounted(() => nextTick(scrollToBottom));
 watch(
-  () => props.selectedChat?.id ?? null,
-  async (id) => {
-    if (!id) {
-      activeMessages.value = [];
-      return;
-    }
-    if (!threads.value[id]) {
-      threads.value[id] = [
-        {
-          id: Date.now(),
-          role: "system",
-          text: `Welcome to ${props.selectedChat?.name}.`,
-          ts: Date.now(),
-        },
-      ];
-    }
-    activeMessages.value = threads.value[id];
+  () => messages.value.length,
+  async () => {
     await nextTick();
     scrollToBottom();
-  },
-  { immediate: true }
+  }
 );
 
-const send = async () => {
-  if (!props.selectedChat) return;
-  const text = draft.value.trim();
+async function send() {
+  const text = input.value.trim();
   if (!text) return;
 
-  const id = props.selectedChat.id;
+  messages.value.push({ id: crypto.randomUUID(), role: "user", content: text });
+  input.value = "";
 
-  const userMsg: Msg = {
-    id: Date.now(),
-    role: "user",
-    text,
-    ts: Date.now(),
-  };
-  threads.value[id] = [...(threads.value[id] || []), userMsg];
-  activeMessages.value = threads.value[id];
-  draft.value = "";
-  await nextTick();
-  scrollToBottom();
+  // Simulate latency + assistant reply
+  setTimeout(() => {
+    messages.value.push({
+      id: crypto.randomUUID(),
+      role: "assistant",
+      content: `Echo: ${text}`,
+    });
+  }, 500);
+}
 
-  const reply: Msg = {
-    id: Date.now() + 1,
-    role: "assistant",
-    text: "Acknowledged. This will call the API soon.",
-    ts: Date.now(),
-  };
-  threads.value[id] = [...threads.value[id], reply];
-  activeMessages.value = threads.value[id];
-  await nextTick();
-  scrollToBottom();
-};
-
-const onKey = (e: KeyboardEvent) => {
+function onKeydown(e: KeyboardEvent) {
   if (e.key === "Enter" && !e.shiftKey) {
     e.preventDefault();
     send();
   }
-};
+}
 
-const scrollToBottom = () => {
-  if (!listRef.value) return;
-  listRef.value.scrollTop = listRef.value.scrollHeight;
-};
-
-onMounted(scrollToBottom);
+watch(input, async () => {
+  await nextTick();
+  if (textareaEl.value) {
+    textareaEl.value.style.height = "auto"; // reset
+    textareaEl.value.style.height = textareaEl.value.scrollHeight + "px";
+    grown.value = textareaEl.value.scrollHeight > 48; // toggle pill vs square
+  }
+});
 </script>
 
 <template>
   <section class="chatwin">
-    <div class="messages" ref="listRef">
-      <div v-if="!selectedChat" class="empty">
-        <div class="empty-box">
-          <div class="empty-title">Select a chat to start messaging</div>
-          <div class="empty-sub">Your conversation will appear here.</div>
+    <div class="chatwin-content">
+      <!-- Scrollable messages -->
+      <div class="messages" ref="listEl">
+        <div v-for="m in messages" :key="m.id" class="bubble" :class="m.role">
+          {{ m.content }}
         </div>
       </div>
-      <div v-else class="stack">
-        <div
-          v-for="m in activeMessages"
-          :key="m.id"
-          class="msg"
-          :data-role="m.role"
-          :title="new Date(m.ts).toLocaleTimeString()"
-        >
-          <div class="bubble">{{ m.text }}</div>
-        </div>
-      </div>
-    </div>
 
-    <div class="composer" v-if="selectedChat">
-      <textarea
-        class="input"
-        v-model="draft"
-        placeholder="Type a message…"
-        @keydown="onKey"
-      />
-      <button class="send" @click="send">Send</button>
+      <!-- Composer -->
+      <form class="composer" @submit.prevent="send">
+        <div class="composer-inner" :class="{ grown }">
+          <textarea
+            ref="textareaEl"
+            class="composer-input"
+            v-model="input"
+            placeholder="Message TavernTalk…"
+            autocomplete="off"
+            rows="1"
+            @keydown="onKeydown"
+          />
+          <button class="composer-btn" type="submit">➤</button>
+        </div>
+      </form>
     </div>
   </section>
 </template>
 
-<style scoped src="./ChatWindow.css"></style>
+<style src="./ChatWindow.css"></style>
