@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import type { Chat } from "@/types/chat";
+import { ref } from "vue";
+import SidebarButton from "./SidebarButton/SidebarButton.vue";
+import Modal from "../Modal/Modal.vue";
 
 type Props = {
   collapsed?: boolean;
@@ -12,10 +15,12 @@ const emit = defineEmits<{
   (e: "toggle"): void;
   (e: "select-chat", chat: Chat): void;
 }>();
+
+const showModal = ref(false);
 </script>
 
 <template>
-  <!-- 1) Reveal button OUTSIDE the aside so transform on sidebar won't hide it -->
+  <!-- 1) Reveal button OUTSIDE -->
   <button
     v-if="props.collapsed"
     class="revealBtn"
@@ -26,7 +31,7 @@ const emit = defineEmits<{
     ›
   </button>
 
-  <!-- Sidebar itself -->
+  <!-- Sidebar -->
   <aside class="sidebar" :class="{ closed: !!props.collapsed }">
     <div class="topRow">
       <button
@@ -52,7 +57,38 @@ const emit = defineEmits<{
         <span v-if="!props.collapsed">{{ chat.name }}</span>
       </li>
     </ul>
+
+    <!-- NEW: NPC Generator Button -->
+    <SidebarButton @click="showModal = true">✨ Generate NPC</SidebarButton>
   </aside>
+
+  <!-- Modal -->
+  <Modal :open="showModal" @close="showModal = false">
+    <h2>Generate NPC</h2>
+    <p>Would you like to roll randomly or enter your own prompt?</p>
+    <div style="display: flex; gap: 1rem; margin-top: 1rem">
+      <button
+        @click="
+          () => {
+            console.log('Random');
+            showModal = false;
+          }
+        "
+      >
+        🎲 Random
+      </button>
+      <button
+        @click="
+          () => {
+            console.log('Custom');
+            showModal = false;
+          }
+        "
+      >
+        ✍️ Custom
+      </button>
+    </div>
+  </Modal>
 </template>
 
 <style src="./Sidebar.css"></style>
