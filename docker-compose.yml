@@ -11,6 +11,11 @@ services:
       - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
 
   backend:
     build:
@@ -19,22 +24,21 @@ services:
     container_name: tavern_backend
     restart: always
     working_dir: /var/www
-    environment:
-      APP_ENV: local
-      APP_DEBUG: "true"
-      APP_URL: http://localhost:9000
-      DB_CONNECTION: pgsql
-      DB_HOST: db
-      DB_PORT: 5432
-      DB_DATABASE: tavern
-      DB_USERNAME: postgres
-      DB_PASSWORD: postgres
+    env_file:
+      - ./backend/.env
     volumes:
       - ./backend:/var/www
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     ports:
       - "9000:9000"
+    entrypoint:
+      [
+        "/bin/sh",
+        "-lc",
+        "chmod +x docker/entrypoint.sh && docker/entrypoint.sh",
+      ]
 
   frontend:
     build:
