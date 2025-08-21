@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, nextTick, watch } from "vue";
+import styles from "./ChatWindow.module.css";
 
 type Msg = {
   id: string | number;
@@ -38,7 +39,6 @@ async function send() {
   messages.value.push({ id: crypto.randomUUID(), role: "user", content: text });
   input.value = "";
 
-  // Simulate latency + assistant reply
   setTimeout(() => {
     messages.value.push({
       id: crypto.randomUUID(),
@@ -58,40 +58,40 @@ function onKeydown(e: KeyboardEvent) {
 watch(input, async () => {
   await nextTick();
   if (textareaEl.value) {
-    textareaEl.value.style.height = "auto"; // reset
+    textareaEl.value.style.height = "auto";
     textareaEl.value.style.height = textareaEl.value.scrollHeight + "px";
-    grown.value = textareaEl.value.scrollHeight > 48; // toggle pill vs square
+    grown.value = textareaEl.value.scrollHeight > 48;
   }
 });
 </script>
 
 <template>
-  <section class="chatwin">
-    <div class="chatwin-content">
-      <!-- Scrollable messages -->
-      <div class="messages" ref="listEl">
-        <div v-for="m in messages" :key="m.id" class="bubble" :class="m.role">
+  <section :class="styles.chatwin">
+    <div :class="styles['chatwin-content']">
+      <div :class="styles.messages" ref="listEl">
+        <div
+          v-for="m in messages"
+          :key="m.id"
+          :class="[styles.bubble, styles[m.role]]"
+        >
           {{ m.content }}
         </div>
       </div>
 
-      <!-- Composer -->
-      <form class="composer" @submit.prevent="send">
-        <div class="composer-inner" :class="{ grown }">
+      <form :class="styles.composer" @submit.prevent="send">
+        <div :class="[styles['composer-inner'], { [styles.grown]: grown }]">
           <textarea
             ref="textareaEl"
-            class="composer-input"
+            :class="styles['composer-input']"
             v-model="input"
             placeholder="Message TavernTalk…"
             autocomplete="off"
             rows="1"
             @keydown="onKeydown"
           />
-          <button class="composer-btn" type="submit">➤</button>
+          <button :class="styles['composer-btn']" type="submit">➤</button>
         </div>
       </form>
     </div>
   </section>
 </template>
-
-<style src="./ChatWindow.css"></style>

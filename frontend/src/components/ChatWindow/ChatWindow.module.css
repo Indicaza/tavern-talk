@@ -1,0 +1,183 @@
+.chatwin {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  background-color: var(--app-bg);
+  margin-top: var(--navbar-height);
+  margin-left: var(--sidebar-width);
+  transition: margin-left var(--dur-slow) var(--ease-bouncy);
+}
+
+.chatwin-content {
+  width: 100%;
+  max-width: var(--content-max-width);
+  display: flex;
+  flex-direction: column;
+  height: calc(100dvh - var(--navbar-height));
+}
+
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--chatwin-padding);
+  display: flex;
+  flex-direction: column;
+  gap: var(--chatwin-gap);
+}
+
+/* bubbles (unchanged look, tokenized) */
+.bubble {
+  position: relative;
+  max-width: min(var(--bubble-max-width), var(--bubble-relative-max));
+  width: fit-content;
+  padding: var(--bubble-padding);
+  margin-bottom: 14px;
+  border-radius: var(--bubble-radius);
+  line-height: 1.45;
+  word-break: break-word;
+  white-space: pre-wrap;
+  border: 1px solid var(--chat-bubble-border);
+  box-shadow: var(--shadow-soft);
+  opacity: 0;
+  transform: translateY(var(--anim-pop-start-y))
+    scale(var(--anim-pop-start-scale));
+  animation: bubblePop var(--dur-slow) var(--ease-springy) forwards;
+}
+
+@keyframes bubblePop {
+  0% {
+    opacity: 0;
+    transform: translateY(var(--anim-pop-start-y))
+      scale(var(--anim-pop-start-scale));
+  }
+  70% {
+    opacity: 1;
+    transform: translateY(var(--anim-pop-overshoot-y))
+      scale(var(--anim-pop-overshoot-scale));
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.bubble.user {
+  margin-left: auto;
+  background: var(--bubbles-user-bg);
+  color: var(--bubbles-user-text);
+  border: #101010 solid 1px;
+}
+.bubble.user::after {
+  content: "";
+  position: absolute;
+  right: 15px;
+  bottom: -10px;
+  border-width: var(--bubble-tail-size) var(--bubble-tail-width) 0
+    var(--bubble-tail-width);
+  border-style: solid;
+  border-color: var(--bubbles-user-bg) transparent transparent transparent;
+}
+
+.bubble.assistant {
+  background: var(--bubbles-assistant-bg);
+  color: var(--bubbles-assistant-text);
+  border: #101010 solid 1px;
+}
+.bubble.assistant::after {
+  content: "";
+  position: absolute;
+  left: 15px;
+  bottom: -10px;
+  border-width: var(--bubble-tail-size) var(--bubble-tail-width) 0
+    var(--bubble-tail-width);
+  border-style: solid;
+  border-color: var(--bubbles-assistant-bg) transparent transparent transparent;
+}
+
+.bubble.system {
+  background: var(--chat-system-bg);
+  color: var(--chat-system-text);
+  border-radius: var(--bubble-radius);
+  box-shadow: var(--shadow-soft);
+}
+
+/* composer wrapper */
+.composer {
+  position: relative;
+  margin: 0 auto 20px auto;
+  max-width: var(--content-max-width);
+  width: 100%;
+  padding: 0 var(--composer-padding-x);
+}
+
+/* inner pill/box */
+.composer-inner {
+  display: flex;
+  align-items: flex-end;
+  position: relative;
+  background: var(--composer-bg);
+  border: 1px solid var(--composer-ring);
+  box-shadow: var(--shadow-inset-thin);
+  transition: border-color var(--dur-base) var(--ease-standard-inout),
+    border-radius var(--dur-base) var(--ease-standard-inout);
+  padding: 6px var(--composer-padding-right-reserve) 6px
+    var(--composer-padding-x);
+  border-radius: var(--composer-pill-radius);
+}
+.composer-inner:focus-within {
+  border-color: var(--composer-ring-focus);
+}
+
+/* keep a non-empty hook so CSS Modules exports it (fixes lint too) */
+.grown {
+  --_hook: 1;
+}
+
+.composer-inner.grown {
+  border-radius: var(--composer-grown-radius);
+}
+
+/* textarea */
+.composer-input {
+  flex: 1;
+  resize: none;
+  overflow-y: hidden;
+  max-height: var(--composer-max-height);
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--composer-input-text);
+  font: inherit;
+  line-height: 1.5;
+  padding: 8px 0;
+}
+
+/* send button */
+.composer-btn {
+  position: absolute;
+  right: 6px;
+  bottom: 5px;
+  width: var(--composer-send-size);
+  height: var(--composer-send-size);
+  border-radius: 50%;
+  background: var(--composer-send-bg);
+  border: none;
+  color: #fff;
+  font-size: var(--composer-send-font-size);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--dur-fast) var(--ease-standard-inout),
+    background var(--dur-fast) var(--ease-standard-inout);
+}
+.composer-btn:hover {
+  background: var(--composer-send-bg-hover);
+  transform: scale(1.1);
+}
+
+@media (max-width: var(--viewport-mobile)) {
+  .chatwin {
+    margin-left: 0;
+  }
+}

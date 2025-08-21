@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import { setSidebarCollapsed } from "@/ui";
 import Navbar from "@/components/Navbar/Navbar.vue";
 import Sidebar from "@/components/Sidebar/Sidebar.vue";
 import ChatWindow from "@/components/ChatWindow/ChatWindow.vue";
@@ -10,39 +11,27 @@ const chats: Chat[] = [
   { id: 2, name: "Development" },
   { id: 3, name: "Random" },
 ];
-
 const collapsed = ref(false);
 const selectedChat = ref<Chat | null>(chats[0]);
 
 function handleToggle() {
   collapsed.value = !collapsed.value;
+  setSidebarCollapsed(collapsed.value);
 }
-
 function handleSelect(chat: Chat) {
   selectedChat.value = chat;
 }
+onMounted(() => setSidebarCollapsed(collapsed.value));
 </script>
 
 <template>
-  <!-- one place to set the sidebar width; CSS does the rest -->
-  <div
-    class="app-shell"
-    :style="{ '--sidebar-width': collapsed ? '0px' : '240px' }"
-  >
-    <Sidebar
-      :collapsed="collapsed"
-      :chats="chats"
-      :selectedChat="selectedChat"
-      @toggle="handleToggle"
-      @select-chat="handleSelect"
-    />
-
-    <Navbar />
-
-    <main class="content">
-      <div class="content-inner">
-        <ChatWindow :selectedChat="selectedChat" />
-      </div>
-    </main>
-  </div>
+  <Navbar />
+  <Sidebar
+    :collapsed="collapsed"
+    :chats="chats"
+    :selectedChat="selectedChat"
+    @toggle="handleToggle"
+    @select-chat="handleSelect"
+  />
+  <ChatWindow />
 </template>

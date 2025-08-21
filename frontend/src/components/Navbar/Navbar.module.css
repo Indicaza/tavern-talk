@@ -1,20 +1,19 @@
 .navbar {
   position: fixed;
   top: 0;
-  left: var(--sidebar-width); /* shift right by sidebar width */
-  height: 80px;
+  left: var(--sidebar-width);
+  height: var(--navbar-height);
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #141414;
+  background: var(--navbar-bg);
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(83, 83, 83, 0.75);
-  box-shadow: 2px 2px 10px 1px rgba(0, 0, 0, 0.65);
-  -webkit-box-shadow: 2px 2px 10px 1px rgba(0, 0, 0, 0.65);
-  -moz-box-shadow: 2px 2px 10px 1px rgba(0, 0, 0, 0.65);
+  border-bottom: 1px solid var(--navbar-border);
+  box-shadow: var(--shadow-soft);
   width: calc(100% - var(--sidebar-width));
-  transition: left 0.25s ease, width 0.25s ease;
-  /* z-index: 20; */
+  transition: left var(--dur-base) var(--ease-standard-inout),
+    width var(--dur-base) var(--ease-standard-inout);
+  z-index: var(--z-navbar);
 }
 
 .navbarContainer {
@@ -22,8 +21,7 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  /* max-width: 1440px; */
-  padding: 0 45px;
+  padding: 0 var(--nav-padding-x);
   margin: 0 auto;
 }
 
@@ -34,11 +32,11 @@
 }
 
 .navbarTitle {
-  font-size: 32px;
+  font-size: var(--nav-title-size);
   font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica,
     Arial, "Apple Color Emoji", "Segoe UI Emoji";
   font-weight: 600;
-  color: #fff;
+  color: var(--navbar-title);
   margin: 0;
 }
 
@@ -53,16 +51,15 @@
   height: 60px;
   border-radius: 50%;
   cursor: pointer;
-  transition: transform 0.3s, box-shadow 0.3s;
-  box-shadow: 3px 3px 3px rgba(1, 1, 1, 0.95);
+  transition: transform var(--dur-slow), box-shadow var(--dur-slow);
+  box-shadow: var(--shadow-avatar);
   object-fit: cover;
 }
 .userAvatar:hover {
   transform: scale(1.1);
 }
 
-@media (max-width: 900px) {
-  /* On mobile the sidebar overlays, so navbar always full width */
+@media (max-width: var(--viewport-mobile)) {
   .navbar {
     left: 0;
     width: 100%;

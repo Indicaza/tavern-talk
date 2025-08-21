@@ -3,6 +3,7 @@ import type { Chat } from "@/types/chat";
 import { ref } from "vue";
 import SidebarButton from "./SidebarButton/SidebarButton.vue";
 import Modal from "../Modal/Modal.vue";
+import styles from "./Sidebar.module.css"; // ✅ import css module
 
 type Props = {
   collapsed?: boolean;
@@ -20,10 +21,10 @@ const showModal = ref(false);
 </script>
 
 <template>
-  <!-- 1) Reveal button OUTSIDE -->
+  <!-- Reveal button -->
   <button
     v-if="props.collapsed"
-    class="revealBtn"
+    :class="styles.revealBtn"
     @click="emit('toggle')"
     aria-label="Open sidebar"
     title="Open sidebar"
@@ -32,34 +33,28 @@ const showModal = ref(false);
   </button>
 
   <!-- Sidebar -->
-  <aside class="sidebar" :class="{ closed: !!props.collapsed }">
-    <div class="topRow">
-      <button
-        class="collapseBtn"
-        @click="emit('toggle')"
-        aria-label="Collapse sidebar"
-        title="Collapse sidebar"
-      >
+  <aside :class="[styles.sidebar, { [styles.collapsed]: !!props.collapsed }]">
+    <div :class="styles.topRow">
+      <button :class="styles.collapseBtn" @click="emit('toggle')">
         {{ props.collapsed ? "›" : "‹" }}
       </button>
-      <span class="title" v-if="!props.collapsed">Chats</span>
+      <span v-if="!props.collapsed" :class="styles.title">Chats</span>
     </div>
 
-    <ul class="chatList">
+    <ul :class="styles.chatList">
       <li
         v-for="chat in props.chats"
         :key="chat.id"
-        class="chatItem"
-        :class="{ active: props.selectedChat?.id === chat.id }"
+        :class="[
+          styles.chatItem,
+          { [styles.active]: props.selectedChat?.id === chat.id },
+        ]"
         @click="emit('select-chat', chat)"
       >
-        <span class="dot"></span>
+        <span :class="styles.dot"></span>
         <span v-if="!props.collapsed">{{ chat.name }}</span>
       </li>
     </ul>
-
-    <!-- NEW: NPC Generator Button -->
-    <SidebarButton @click="showModal = true">✨ Generate NPC</SidebarButton>
   </aside>
 
   <!-- Modal -->
@@ -90,5 +85,3 @@ const showModal = ref(false);
     </div>
   </Modal>
 </template>
-
-<style src="./Sidebar.css"></style>
