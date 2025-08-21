@@ -10,7 +10,7 @@
   left: 0;
   height: 100dvh;
   width: var(--sidebar-width);
-  border-right: 1px solid #1f2937;
+  border-right: rgba(83, 83, 83, 0.75);
   overflow: hidden;
   z-index: 15; /* below navbar (20) */
   background: #181818;

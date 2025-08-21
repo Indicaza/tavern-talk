@@ -2,13 +2,13 @@
 
 export const theme = {
   layout: {
-    navbarHeight: "80px",
+    navbarHeight: "72px",
     sidebarWidth: "240px",
     contentMaxWidth: "800px",
     viewportMobile: "900px",
     zIndex: {
-      sidebar: 15,
-      navbar: 20,
+      sidebar: 25,
+      navbar: 15,
       revealBtn: 30,
       modal: 50,
     },
@@ -20,8 +20,8 @@ export const theme = {
       round: "999px",
     },
     shadows: {
-      soft: "2px 2px 10px 1px rgba(0,0,0,0.65)",
-      insetThin: "inset 0 0 0 1px #1f2937",
+      soft: "2px 2px 10px 1px rgba(0,0,0,0.75)",
+      insetThin: "inset 0 0 0 1px #141414",
       avatar: "3px 3px 3px rgba(1,1,1,0.95)",
       modal: "0 12px 30px rgba(0,0,0,0.4)",
     },
@@ -40,19 +40,19 @@ export const theme = {
       springy: "cubic-bezier(0.25, 1.25, 0.5, 1)",
     },
     anim: {
-      popStartY: "10px",
-      popOvershootY: "-2px",
+      popStartY: "50px",
+      popOvershootY: "-10px",
       popStartScale: "0.95",
-      popOvershootScale: "1.02",
+      popOvershootScale: "1.025",
     },
   },
 
   colors: {
     app: { bg: "#212121", text: "#e5e7eb" },
-    navbar: { bg: "#141414", border: "rgba(83,83,83,0.75)", title: "#ffffff" },
+    navbar: { bg: "#181818", border: "rgba(83,83,83,0.75)", title: "#ffffff" },
     sidebar: {
       bg: "#181818",
-      border: "#1f2937",
+      border: "rgba(83,83,83,0.75)",
       hover: "#111827",
       active: "#0b1222",
       title: "#94a3b8",
@@ -83,9 +83,9 @@ export const theme = {
     modal: { bg: "#ffffff", text: "#0f172a" },
   },
 
-  navbar: { paddingX: "45px", titleSize: "32px" },
+  navbar: { paddingX: "42px", titleSize: "28px" },
   sidebar: {
-    itemHeight: "400px",
+    itemHeight: "40px",
     itemGap: "10px",
     itemRadius: "8px",
     collapseBtnSize: "42px",
@@ -96,12 +96,12 @@ export const theme = {
     maxWidth: "760px",
     relativeMax: "85%",
     radius: "14px",
-    padding: "12px 14px",
+    padding: "12px 22px",
     tailSize: "15px",
     tailWidth: "10px",
   },
   composer: {
-    maxHeight: "200px",
+    maxHeight: "240px",
     paddingX: "16px",
     paddingRightReserve: "56px",
     pillRadius: "100px",

@@ -8,7 +8,7 @@
   align-items: center;
   background: var(--navbar-bg);
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--navbar-border);
+  border-bottom: var(--navbar-border);
   box-shadow: var(--shadow-soft);
   width: calc(100% - var(--sidebar-width));
   transition: left var(--dur-base) var(--ease-standard-inout),
@@ -47,8 +47,8 @@
 }
 
 .userAvatar {
-  width: 60px;
-  height: 60px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   cursor: pointer;
   transition: transform var(--dur-slow), box-shadow var(--dur-slow);
