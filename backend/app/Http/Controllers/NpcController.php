@@ -414,4 +414,19 @@ class NpcController extends Controller
 
         return asset('storage/'.$filename);
     }
+
+    public function index()
+    {
+        return response()->json(
+            Character::orderByDesc('created_at')->get()
+        );
+    }
+
+    public function destroy(string $id)
+    {
+        $npc = Character::findOrFail($id);
+        $npc->delete();
+
+        return response()->json(['success' => true]);
+    }
 }

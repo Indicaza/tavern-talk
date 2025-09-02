@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from "vue";
-import { createNpc, type Character } from "@/lib/api";
+import { createNpc } from "../CreateNpcModal/api";
+import type { Character } from "../../../types/character";
 import styles from "./CreateNpcModal.module.css";
 
 type Props = {
@@ -37,7 +38,6 @@ async function doCreate(useRandom: boolean) {
   }
 }
 
-// close on Escape
 function onKey(e: KeyboardEvent) {
   if (e.key === "Escape") emit("close");
 }

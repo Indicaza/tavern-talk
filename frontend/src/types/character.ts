@@ -1,0 +1,20 @@
+export type Character = {
+  id: string;
+  is_pc: boolean;
+  owner_user_id: string | null;
+  name: string;
+  race: string;
+  subrace: string | null;
+  class: string;
+  level: number;
+  gender: string;
+  age: number;
+  alignment: string;
+  background: string | null;
+  personality_type: string | null;
+  bio: string | null;
+  short_pitch: string | null;
+  portrait_url: string | null;
+  created_at: string;
+  updated_at: string;
+};
