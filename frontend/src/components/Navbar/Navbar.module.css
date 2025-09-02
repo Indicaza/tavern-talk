@@ -33,8 +33,7 @@
 
 .navbarTitle {
   font-size: var(--nav-title-size);
-  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica,
-    Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  font-family: "IM Fell English SC", serif;
   font-weight: 600;
   color: var(--navbar-title);
   margin: 0;
@@ -50,6 +49,7 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
+  background-color: aqua;
   cursor: pointer;
   transition: transform var(--dur-slow), box-shadow var(--dur-slow);
   box-shadow: var(--shadow-avatar);

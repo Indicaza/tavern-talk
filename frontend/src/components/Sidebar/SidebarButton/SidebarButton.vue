@@ -1,11 +1,19 @@
-<template>
-  <button :class="$style.button" @click="$emit('click')">
-    <slot />
-  </button>
-</template>
-
 <script setup lang="ts">
-defineEmits<{ (e: "click"): void }>();
+import styles from "./SidebarButton.module.css";
+
+type Props = {
+  label: string;
+};
+const props = defineProps<Props>();
+
+const emit = defineEmits<{
+  (e: "click"): void;
+}>();
 </script>
 
-<style module src="./SidebarButton.module.css"></style>
+<template>
+  <button :class="styles.button" @click="emit('click')">
+    <slot name="icon" />
+    <span>{{ label }}</span>
+  </button>
+</template>

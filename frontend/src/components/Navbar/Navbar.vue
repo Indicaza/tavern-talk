@@ -10,11 +10,7 @@ import styles from "./Navbar.module.css";
       </div>
 
       <div :class="styles.navbarRight">
-        <img
-          :class="styles.userAvatar"
-          src="https://placehold.co/60x60/png"
-          alt="User"
-        />
+        <img :class="styles.userAvatar" src="" alt="User" />
       </div>
     </div>
   </header>
