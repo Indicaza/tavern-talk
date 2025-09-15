@@ -1,5 +1,3 @@
-// src/theme.ts
-
 export const theme = {
   layout: {
     navbarHeight: "72px",

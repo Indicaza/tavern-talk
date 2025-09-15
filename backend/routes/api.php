@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
-// Health check
 Route::get('/health', function () {
     return response()->json([
         'ok' => true,
@@ -14,7 +13,6 @@ Route::get('/health', function () {
     ]);
 });
 
-// DB debug helper
 Route::get('/_dbdebug', function () {
     $host = Config::get('database.connections.pgsql.host');
     $dns = gethostbyname($host);
@@ -36,15 +34,14 @@ Route::get('/_dbdebug', function () {
     ]);
 });
 
-// --- NPC routes ---
+// NPCs
 Route::post('/npcs', [NpcController::class, 'store']);
 Route::get('/npcs', [NpcController::class, 'index']);
+Route::get('/npcs/{id}', [NpcController::class, 'show']);
 Route::delete('/npcs/{id}', [NpcController::class, 'destroy']);
+Route::post('/npcs/{id}/portrait', [\App\Http\Controllers\NpcController::class, 'regeneratePortrait']);
 
-// Legacy/example route (optional)
-Route::get('/characters', fn () => \App\Models\Character::orderByDesc('created_at')->limit(10)->get());
-
-// --- Chat routes ---
+// Chats
 Route::get('/chats', [ChatController::class, 'index']);
 Route::post('/chats', [ChatController::class, 'store']);
 Route::get('/chats/{id}', [ChatController::class, 'show']);

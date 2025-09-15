@@ -3,6 +3,9 @@
   --sidebar-width: 240px; /* runtime-updated by Sidebar.vue */
 }
 
+/* ─────────────────────────────────────────────────────────────────────────────
+   SIDEBAR SHELL
+   ─────────────────────────────────────────────────────────────────────────── */
 .sidebar {
   position: fixed;
   top: 0;
@@ -12,7 +15,7 @@
   background: #181818;
   backdrop-filter: blur(10px);
   box-shadow: 2px 2px 10px 1px rgba(0, 0, 0, 0.65);
-  overflow: hidden;
+  overflow: hidden; /* scrolling happens in .scrollArea */
   z-index: 15;
   transform: translateX(0);
   transition: transform var(--dur-slow) var(--ease-bouncy),
@@ -23,6 +26,15 @@
   transform: translateX(-100%);
 }
 
+/* Scrollable content region below the top bar */
+.scrollArea {
+  height: calc(100dvh - var(--navbar-height));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-bottom: 16px;
+}
+
+/* Top bar */
 .topRow {
   display: flex;
   align-items: center;
@@ -39,7 +51,9 @@
   margin-left: 12px;
 }
 
-.collapseBtn {
+/* Toggle buttons */
+.collapseBtn,
+.revealBtn {
   width: 42px;
   height: 42px;
   border-radius: 100%;
@@ -63,24 +77,13 @@
   top: calc(var(--navbar-height) + 10px);
   left: 10px;
   z-index: 30;
-  width: 42px;
-  height: 42px;
-  border-radius: 100%;
-  color: #e5e7eb;
-  border: 1px solid #334155;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-  font-size: 1.6rem;
-  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), background 0.25s;
 }
 .revealBtn:hover {
   background: #273244;
   transform: scale(1.15) rotate(-6deg);
 }
 
+/* Responsive width tweaks */
 @media (max-width: 900px) {
   .sidebar {
     width: 80%;
@@ -91,7 +94,9 @@
   }
 }
 
-/* Tree headers */
+/* ─────────────────────────────────────────────────────────────────────────────
+   TREE / ACCORDION
+   ─────────────────────────────────────────────────────────────────────────── */
 .groupHeader,
 .subHeader {
   display: flex;
@@ -107,7 +112,7 @@
   padding-top: 6px;
 }
 
-/* Caret with rotation anim */
+/* Caret */
 .caret {
   display: inline-block;
   width: 16px;
@@ -123,7 +128,7 @@
   transform: rotate(0deg);
 }
 
-/* Indentation levels */
+/* Indentation */
 .indent1 {
   padding-left: 14px;
 }
@@ -131,12 +136,11 @@
   padding-left: 28px;
 }
 
-/* Accordion containers */
+/* Collapsible containers */
 .groupContent,
 .subContent {
   overflow: hidden;
   transition: max-height 260ms cubic-bezier(0.2, 0, 0, 1), opacity 220ms ease;
-  opacity: 1;
 }
 .open {
   max-height: 1000px;
@@ -147,7 +151,7 @@
   opacity: 0;
 }
 
-/* Inner wrapper */
+/* Wrapper for inner content */
 .groupInner {
   display: flex;
   flex-direction: column;
@@ -155,12 +159,12 @@
   padding: 6px 6px 10px 6px;
 }
 
-/* Top actions */
+/* Top action row */
 .actionsAreaTop {
   padding: 4px;
 }
 
-/* Search */
+/* Search row */
 .searchWrap {
   display: flex;
   gap: 8px;
@@ -177,7 +181,9 @@
   font-size: 14px;
 }
 
-/* List */
+/* ─────────────────────────────────────────────────────────────────────────────
+   LISTS & ROWS
+   ─────────────────────────────────────────────────────────────────────────── */
 .list {
   list-style: none;
   padding: 6px 4px 8px 4px;
@@ -186,48 +192,77 @@
   flex-direction: column;
   gap: 6px;
 }
+
 .row {
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 8px;
   border-radius: 10px;
-  background: #222;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: transparent; /* flattened look */
+  border: none;
   cursor: pointer;
   transform: translateX(0);
   animation: itemIn 220ms ease both;
 }
 .row:hover {
-  background: #262626;
+  background: rgba(255, 255, 255, 0.04);
 }
-.thumb {
+
+/* Avatar / portrait */
+.thumb,
+.thumbPending {
   width: 40px;
   height: 40px;
-  border-radius: 6px;
+  border-radius: 50%;
+}
+.thumb {
   object-fit: cover;
 }
+
+.thumbPending {
+  background: linear-gradient(90deg, #2c2c2c 25%, #3a3a3a 37%, #2c2c2c 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.2s ease-in-out infinite;
+}
+
+/* Meta text block (right of avatar) */
 .meta {
   display: grid;
   gap: 2px;
+  flex: 1;
+  min-width: 0; /* enable text truncation */
 }
 .name {
   font-size: 14px;
   font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .sub {
   font-size: 12px;
   opacity: 0.8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
+
+/* Row action */
 .deleteBtn {
-  margin-left: auto;
+  margin-left: 8px;
   background: transparent;
   border: none;
   color: #f5f5f5;
-  opacity: 0.7;
   font-size: 16px;
   cursor: pointer;
+  opacity: 0.7;
 }
+.deleteBtn:hover {
+  opacity: 1;
+}
+
+/* Empty state */
 .empty {
   opacity: 0.7;
   font-size: 13px;
@@ -236,7 +271,18 @@
   border: 1px dashed rgba(255, 255, 255, 0.12);
 }
 
-/* Animations */
+/* ─────────────────────────────────────────────────────────────────────────────
+   ANIMATIONS
+   ─────────────────────────────────────────────────────────────────────────── */
+@keyframes shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+
 @keyframes itemIn {
   from {
     opacity: 0;
@@ -245,5 +291,15 @@
   to {
     opacity: 1;
     transform: translateX(0);
+  }
+}
+
+/* Prefer reduced-motion users */
+@media (prefers-reduced-motion: reduce) {
+  .row {
+    animation: none;
+  }
+  .thumbPending {
+    animation: none;
   }
 }

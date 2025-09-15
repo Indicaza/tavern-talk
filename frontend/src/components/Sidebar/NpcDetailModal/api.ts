@@ -42,7 +42,19 @@ export async function createChatForNpc(npcId: string, title?: string) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ npc_id: npcId, title }),
   });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data?.message || "Failed to create chat");
+  let data: any;
+  try {
+    data = await res.json();
+  } catch {
+    if (!res.ok) throw new Error("Failed to create chat");
+    throw new Error("Malformed response while creating chat");
+  }
+  if (!res.ok) {
+    const msg =
+      (typeof data?.message === "string" && data.message) ||
+      (typeof data?.error === "string" && data.error) ||
+      "Failed to create chat";
+    throw new Error(msg);
+  }
   return data as { id: string };
 }

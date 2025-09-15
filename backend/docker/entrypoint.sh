@@ -1,13 +1,30 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/usr/bin/env sh
+set -e
 
-php artisan optimize:clear
+echo "==> Bootstrapping Laravel in container..."
 
-until php -r 'try{$c=new PDO("pgsql:host=".getenv("DB_HOST").";port=".getenv("DB_PORT").";dbname=".getenv("DB_DATABASE"), getenv("DB_USERNAME"), getenv("DB_PASSWORD"));echo "ok\n";}catch(Throwable $e){http_response_code(1);}'; do
-  sleep 1
-done
+# If vendor volume is empty, seed it from the baked image vendor
+if [ ! -f /var/www/vendor/autoload.php ]; then
+  echo "==> vendor/ empty; seeding from /opt/vendor-seed..."
+  mkdir -p /var/www/vendor
+  cp -r /opt/vendor-seed/* /var/www/vendor/ || true
+fi
 
-php artisan migrate --force || true
+# Permissions (safe on Linux; no-op on macOS bind mounts)
+mkdir -p storage/framework/{cache,data,sessions,views} storage/app/public
+chmod -R 777 storage bootstrap/cache || true
+
+# Install if vendor is still incomplete (useful on fresh named volume)
+if [ ! -f /var/www/vendor/autoload.php ]; then
+  echo "==> Running composer install to populate vendor volume..."
+  composer install --no-dev --prefer-dist --no-interaction --no-progress
+fi
+
+# Storage symlink (idempotent)
 php artisan storage:link || true
 
-exec ${START_CMD:-php artisan serve --host=0.0.0.0 --port=9000}
+# Migrate (idempotent)
+php artisan migrate --force || true
+
+echo "==> Ready. Running CMD..."
+exec "$@"

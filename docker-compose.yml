@@ -12,7 +12,7 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "postgres"]
+      test: ["CMD", "pg_isready", "-U", "postgres", "-d", "tavern"]
       interval: 5s
       timeout: 3s
       retries: 20
@@ -26,8 +26,11 @@ services:
     working_dir: /var/www
     env_file:
       - ./backend/.env
+    # Bind-mount your code for live edits, but keep vendor as a named volume
     volumes:
       - ./backend:/var/www
+      - storage_public:/var/www/storage/app/public
+      - vendor:/var/www/vendor
     depends_on:
       db:
         condition: service_healthy
@@ -37,13 +40,31 @@ services:
       [
         "/bin/sh",
         "-lc",
-        "chmod +x docker/entrypoint.sh && docker/entrypoint.sh",
+        "chmod +x docker/entrypoint.sh && docker/entrypoint.sh php artisan serve --host=0.0.0.0 --port=9000",
       ]
+
+  worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: tavern_worker
+    restart: always
+    working_dir: /var/www
+    env_file:
+      - ./backend/.env
+    volumes:
+      - ./backend:/var/www
+      - storage_public:/var/www/storage/app/public
+      - vendor:/var/www/vendor
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >
+      sh -lc "php artisan queue:work --queue=portraits,default --sleep=1 --backoff=15 --tries=3"
 
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
     container_name: tavern_frontend
     restart: always
     volumes:
@@ -56,3 +77,5 @@ services:
 
 volumes:
   db_data:
+  storage_public:
+  vendor:

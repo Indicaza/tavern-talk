@@ -38,3 +38,27 @@ export async function createNpc(
   }
   return data as Character;
 }
+
+export async function getNpc(id: string): Promise<Character> {
+  const res = await fetch(`/api/npcs/${id}`);
+  if (!res.ok) throw new Error("Failed to fetch NPC");
+  return await res.json();
+}
+
+export async function pollNpcPortrait(
+  id: string,
+  opts?: { timeoutMs?: number; minDelayMs?: number; maxDelayMs?: number }
+): Promise<Character> {
+  const timeoutMs = opts?.timeoutMs ?? 60000;
+  const minDelay = opts?.minDelayMs ?? 1200;
+  const maxDelay = opts?.maxDelayMs ?? 5000;
+  const start = Date.now();
+  let delay = minDelay;
+  while (true) {
+    const npc = await getNpc(id);
+    if (npc.portrait_url) return npc;
+    if (Date.now() - start > timeoutMs) return npc;
+    await new Promise((r) => setTimeout(r, delay));
+    delay = Math.min(Math.floor(delay * 1.6), maxDelay);
+  }
+}

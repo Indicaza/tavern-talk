@@ -38,44 +38,57 @@ async function startChat() {
   <div v-if="open && npc" :class="styles.overlay" @click.self="emit('close')">
     <div :class="styles.modal">
       <div :class="styles.header">
-        <div :class="styles.titleRow">
+        <div :class="styles.headerGrid">
           <img
             v-if="npc.portrait_url"
             :src="npc.portrait_url"
             :alt="npc.name"
             :class="styles.portrait"
           />
-          <div>
+          <div v-else :class="styles.portraitPending" aria-busy="true" />
+          <div :class="styles.headerMeta">
             <h2 :class="styles.title">{{ npc.name }}</h2>
             <div :class="styles.subtitle">
-              {{ npc.race }} • {{ npc.class }} • Lv {{ npc.level }}
+              <span v-if="npc.level">Lv {{ npc.level }}</span>
+              <span v-if="npc.level"> • </span>
+              <span>{{ npc.race }}</span>
+              <span> • </span>
+              <span>{{ npc.class }}</span>
+            </div>
+            <div :class="styles.chips">
+              <span v-if="npc.alignment" :class="styles.chip">{{
+                npc.alignment
+              }}</span>
+              <span v-if="npc.personality_type" :class="styles.chip">{{
+                npc.personality_type
+              }}</span>
             </div>
           </div>
         </div>
-        <button :class="styles.closeBtn" @click="emit('close')">✕</button>
+        <button
+          :class="styles.closeBtn"
+          @click="emit('close')"
+          aria-label="Close"
+        >
+          ✕
+        </button>
       </div>
 
       <div :class="styles.body">
-        <div :class="styles.section">
-          <div :class="styles.label">Alignment</div>
-          <div :class="styles.value">{{ npc.alignment }}</div>
-        </div>
-        <div :class="styles.section">
-          <div :class="styles.label">Personality</div>
-          <div :class="styles.value">{{ npc.personality_type }}</div>
-        </div>
-        <div :class="styles.section">
-          <div :class="styles.label">Background</div>
-          <div :class="styles.value">{{ npc.background }}</div>
-        </div>
-        <div :class="styles.section">
-          <div :class="styles.label">Pitch</div>
-          <div :class="styles.value">{{ npc.short_pitch }}</div>
-        </div>
-        <div :class="styles.section">
-          <div :class="styles.label">Bio</div>
-          <div :class="styles.value">{{ npc.bio }}</div>
-        </div>
+        <section :class="styles.card">
+          <div :class="styles.cardLabel">Pitch</div>
+          <div :class="styles.cardValue">{{ npc.short_pitch || "—" }}</div>
+        </section>
+
+        <section :class="styles.card">
+          <div :class="styles.cardLabel">Background</div>
+          <div :class="styles.cardValue">{{ npc.background || "—" }}</div>
+        </section>
+
+        <section :class="[styles.card, styles.span2]">
+          <div :class="styles.cardLabel">Bio</div>
+          <div :class="styles.cardValue">{{ npc.bio || "—" }}</div>
+        </section>
 
         <div v-if="error" :class="styles.error">{{ error }}</div>
 
