@@ -1,19 +1,22 @@
 .chatwin {
   flex: 1;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   background-color: var(--app-bg);
   margin-top: var(--navbar-height);
   margin-left: var(--sidebar-width);
   transition: margin-left var(--dur-slow) var(--ease-bouncy);
+  height: calc(100dvh - var(--navbar-height));
+  overflow-y: auto;
 }
 
 .chatwin-content {
   width: 100%;
   max-width: var(--content-max-width);
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  height: calc(100dvh - var(--navbar-height));
+  flex: 1;
 }
 
 .emptyState {
@@ -30,14 +33,12 @@
 
 .messages {
   flex: 1;
-  overflow-y: auto;
   padding: var(--chatwin-padding);
   display: flex;
   flex-direction: column;
   gap: var(--chatwin-gap);
 }
 
-/* bubbles (unchanged look, tokenized) */
 .bubble {
   position: relative;
   max-width: min(var(--bubble-max-width), var(--bubble-relative-max));
@@ -79,6 +80,7 @@
   color: var(--bubbles-user-text);
   border: #101010 solid 1px;
 }
+
 .bubble.user::after {
   content: "";
   position: absolute;
@@ -95,6 +97,7 @@
   color: var(--bubbles-assistant-text);
   border: #101010 solid 1px;
 }
+
 .bubble.assistant::after {
   content: "";
   position: absolute;
@@ -113,16 +116,15 @@
   box-shadow: var(--shadow-soft);
 }
 
-/* composer wrapper */
 .composer {
-  position: relative;
-  margin: 0 auto 20px auto;
+  position: sticky;
+  bottom: 0;
+  margin: 0 auto;
   max-width: var(--content-max-width);
   width: 100%;
-  padding: 0 var(--composer-padding-x);
+  padding: 0 var(--composer-padding-x) 20px;
 }
 
-/* inner pill/box */
 .composer-inner {
   display: flex;
   align-items: flex-end;
@@ -136,11 +138,11 @@
     var(--composer-padding-x);
   border-radius: var(--composer-pill-radius);
 }
+
 .composer-inner:focus-within {
   border-color: var(--composer-ring-focus);
 }
 
-/* keep a non-empty hook so CSS Modules exports it (fixes lint too) */
 .grown {
   --_hook: 1;
 }
@@ -149,7 +151,6 @@
   border-radius: var(--composer-grown-radius);
 }
 
-/* textarea */
 .composer-input {
   flex: 1;
   resize: none;
@@ -164,7 +165,6 @@
   padding: 8px 0;
 }
 
-/* send button */
 .composer-btn {
   position: absolute;
   right: 6px;
@@ -183,6 +183,7 @@
   transition: transform var(--dur-fast) var(--ease-standard-inout),
     background var(--dur-fast) var(--ease-standard-inout);
 }
+
 .composer-btn:hover {
   background: var(--composer-send-bg-hover);
   transform: scale(1.1);

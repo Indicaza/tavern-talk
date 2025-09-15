@@ -1,5 +1,7 @@
 :root {
   --ring: rgba(255, 255, 255, 0.12);
+  --modal-in: cubic-bezier(0.22, 1.56, 0.28, 1);
+  --modal-out: cubic-bezier(0.55, 0.06, 0.68, 0.19);
 }
 
 .overlay {
@@ -18,6 +20,7 @@
   z-index: 60;
   backdrop-filter: blur(4px);
 }
+
 .modal {
   width: 760px;
   max-width: 100%;
@@ -29,7 +32,6 @@
   overflow: hidden;
 }
 
-/* Header */
 .header {
   position: relative;
   padding: 18px 20px;
@@ -45,6 +47,7 @@
       transparent 60%
     );
 }
+
 .headerMeta {
   display: grid;
   gap: 6px;
@@ -59,7 +62,6 @@
   opacity: 0.9;
 }
 
-/* Close */
 .closeBtn {
   position: absolute;
   right: 12px;
@@ -73,18 +75,17 @@
   font-size: 18px;
   cursor: pointer;
 }
+
 .closeBtn:hover {
   background: rgba(255, 255, 255, 0.08);
 }
 
-/* Body */
 .body {
   padding: 18px 20px 20px 20px;
   display: grid;
   gap: 16px;
 }
 
-/* Field */
 .field {
   display: grid;
   gap: 10px;
@@ -95,6 +96,7 @@
   text-transform: uppercase;
   opacity: 0.7;
 }
+
 .textarea {
   width: 100%;
   min-height: 140px;
@@ -107,14 +109,17 @@
   padding: 12px;
   outline: none;
 }
+
 .textarea:focus {
   border-color: rgba(59, 130, 246, 0.5);
   box-shadow: inset 0 0 0 2px rgba(59, 130, 246, 0.35);
 }
+
 .hint {
   font-size: 12px;
   opacity: 0.75;
 }
+
 .kbd {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
     "Liberation Mono", "Courier New", monospace;
@@ -126,7 +131,6 @@
   margin: 0 2px;
 }
 
-/* Error */
 .error {
   color: #fca5a5;
   font-size: 13px;
@@ -136,13 +140,13 @@
   border: 1px solid rgba(239, 68, 68, 0.18);
 }
 
-/* Actions */
 .actions {
   margin-top: 4px;
   display: flex;
   gap: 10px;
   justify-content: flex-end;
 }
+
 .primary,
 .secondary,
 .secondaryGhost {
@@ -153,6 +157,7 @@
   transition: transform 120ms ease, filter 120ms ease, background 120ms ease,
     border-color 120ms ease;
 }
+
 .primary {
   background: linear-gradient(180deg, #2f6cf0, #2557c7);
   color: #fff;
@@ -188,10 +193,64 @@
   background: rgba(255, 255, 255, 0.06);
 }
 
+/* Entry/exit choreography */
+:global(.tt-modal-enter-from) {
+  opacity: 0;
+}
+:global(.tt-modal-enter-active) {
+  transition: opacity 0.36s ease-out;
+}
+:global(.tt-modal-leave-to) {
+  opacity: 0;
+}
+:global(.tt-modal-leave-active) {
+  transition: opacity 0.28s ease-in;
+}
+
+:global(.tt-modal-enter-active) .modal {
+  animation: modalIn 0.58s var(--modal-in) both;
+}
+:global(.tt-modal-leave-active) .modal {
+  animation: modalOut 0.34s var(--modal-out) both;
+}
+
+@keyframes modalIn {
+  0% {
+    transform: translateY(30px) scale(0.96);
+    opacity: 0.6;
+    filter: saturate(0.9) blur(0.3px);
+  }
+  60% {
+    transform: translateY(-6px) scale(1.006);
+    opacity: 1;
+  }
+  80% {
+    transform: translateY(2px) scale(0.998);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    filter: saturate(1) blur(0);
+  }
+}
+
+@keyframes modalOut {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(12px) scale(0.985);
+    opacity: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .primary,
-  .secondary,
-  .secondaryGhost {
+  :global(.tt-modal-enter-active),
+  :global(.tt-modal-leave-active) {
     transition: none;
+  }
+  :global(.tt-modal-enter-active) .modal,
+  :global(.tt-modal-leave-active) .modal {
+    animation: none;
   }
 }
